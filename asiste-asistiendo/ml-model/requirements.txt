@@ -1,0 +1,38 @@
+# Dependencias para modelo de ML propio (futuro)
+# Usar cuando se quiera reemplazar face-api.js por modelo propio
+
+# Framework de deep learning
+tensorflow>=2.14.0
+# O alternativa más ligera:
+# torch>=2.1.0
+# torchvision>=0.16.0
+
+# Procesamiento de imágenes
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# Manipulación de datos
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Modelos pre-entrenados de reconocimiento facial
+# face-recognition>=1.3.0  # Basado en dlib
+# deepface>=0.0.79  # Múltiples backends
+
+# API para servir el modelo
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# Utilidades
+python-dotenv>=1.0.0
+tqdm>=4.66.0
+
+# Serialización de modelos
+joblib>=1.3.0
+
+# Para entrenamiento
+scikit-learn>=1.3.0
+matplotlib>=3.8.0
+
+# Testing
+pytest>=7.4.0

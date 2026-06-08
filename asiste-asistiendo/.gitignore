@@ -1,0 +1,54 @@
+# Dependencias
+node_modules/
+.venv/
+__pycache__/
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build
+dist/
+build/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporal
+tmp/
+temp/
+*.tmp
+
+# Docker
+docker-compose.override.yml
+
+# Modelos ML (muy pesados para git)
+ml-model/models/
+*.h5
+*.pt
+*.pth
+*.onnx
+*.pb
+
+# Datos sensibles
+*.pem
+*.key
+credentials.json

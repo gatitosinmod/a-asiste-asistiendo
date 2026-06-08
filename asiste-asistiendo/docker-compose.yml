@@ -1,0 +1,107 @@
+# Docker Compose - Sistema de Asistencia Facial
+# Levanta todos los servicios necesarios
+
+version: '3.8'
+
+services:
+  # ===========================================
+  # BASE DE DATOS
+  # ===========================================
+  mongodb:
+    image: mongo:7.0
+    container_name: facial-auth-db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: facial-auth
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - facial-auth-network
+
+  # ===========================================
+  # BACKEND API
+  # ===========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: facial-auth-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/facial-auth?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-super_secreto_cambiar_en_produccion}
+      JWT_EXPIRES: 7d
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    networks:
+      - facial-auth-network
+
+  # ===========================================
+  # FRONTEND
+  # ===========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: facial-auth-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - facial-auth-network
+
+  # ===========================================
+  # MODELO ML (Opcional - para modelo propio)
+  # ===========================================
+  # ml-model:
+  #   build:
+  #     context: ./ml-model
+  #     dockerfile: Dockerfile
+  #   container_name: facial-auth-ml
+  #   restart: unless-stopped
+  #   environment:
+  #     MODEL_PATH: /app/models
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ml_models:/app/models
+  #   networks:
+  #     - facial-auth-network
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]  # Si tienes GPU
+
+# ===========================================
+# VOLÚMENES
+# ===========================================
+volumes:
+  mongodb_data:
+    name: facial-auth-mongodb-data
+  mongodb_config:
+    name: facial-auth-mongodb-config
+  # ml_models:
+  #   name: facial-auth-ml-models
+
+# ===========================================
+# REDES
+# ===========================================
+networks:
+  facial-auth-network:
+    name: facial-auth-network
+    driver: bridge
